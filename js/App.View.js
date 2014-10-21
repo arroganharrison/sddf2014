@@ -1,23 +1,36 @@
 var appView = Backbone.View.extend({
 	el: "#app",
 	initialize: function() {
+		$('body').keyup(this.swipe);
+		app.people.fetch();
 		
 	},
 	
 	events: {
 	'click #have-swipes': 'swipeScreen',
 	'click #need-swipes': 'waitScreen',
+	'keyup window': 'swipe',
 	},
 
 	swipeScreen: function() {
-		app.people = new app.PersonList();
-		app.people.fetch();
-		var personView = new app.PersonView({model: app.temp})
-		$("#main").html(personView.render().el)
-		//$("#main").html("alkfdjadsf")
-		while (!app.people.isEmpty()) {
-			$(this.el).html(people[0].render().el)
-		}  
+		
+		
+		var personView = new app.PersonView({model: app.people.first()})
+		$(this.el).html(personView.render().el)
+	},
+
+	swipe: function(e) {
+		if (!(e.which == 37) && !(e.which == 39)) {
+			return
+		}
+		else if (e.which == 37) {
+			app.people.shift();
+			app.appView.swipeScreen();
+		}
+		else if (e.which == 39) {
+			$("#app").html(app.people.first().attributes.phoneNumber);
+			console.log(app.people.first().attributes.phoneNumber);
+		}
 	},
 
 	waitScreen: function() {
@@ -26,4 +39,5 @@ var appView = Backbone.View.extend({
 });
 
 app.appView = new appView();
+
 app.appView.swipeScreen();

@@ -37,7 +37,7 @@ app.PersonView = Backbone.View.extend({
 	},
 
 	initialize: function() {
-		this.model.on('change:rank', this.render, this);
+		//this.model.on('change:rank', this.render, this);
 	}
 });
 
@@ -46,4 +46,8 @@ app.PersonList = Backbone.Collection.extend({
 	localStorage: new Store("robin-food-people")
 });
 
-app.temp = new app.Person();
+app.people = new app.PersonList();
+for (var i = 0; i < 10; i++) {
+	app.people.create({year: i});
+}
+console.log(app.people);
