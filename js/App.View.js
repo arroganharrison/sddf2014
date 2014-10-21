@@ -4,6 +4,11 @@ var appView = Backbone.View.extend({
 		
 		this.
 	},
+	
+	events: {
+	'click #have-swipes': 'swipeScreen',
+	'click #need-swipes': 'waitScreen',
+	},
 
 	swipeScreen: function() {
 
