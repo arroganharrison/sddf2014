@@ -10,6 +10,7 @@ var appView = Backbone.View.extend({
 	'click #have-swipes': 'swipeScreen',
 	'click #need-swipes': 'waitScreen',
 	'keyup window': 'swipe',
+	'click #cancel-search': 'waitScreen'
 	},
 
 	swipeScreen: function() {
@@ -34,10 +35,14 @@ var appView = Backbone.View.extend({
 	},
 
 	waitScreen: function() {
-
+    		$('#wait').toggle();
+    		$('#main').toggle();
 	}
+	
 });
 
 app.appView = new appView();
 
 app.appView.swipeScreen();
+
+app.appView.waitScreen();
