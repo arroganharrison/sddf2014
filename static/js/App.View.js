@@ -4,6 +4,7 @@ var appView = Backbone.View.extend({
 		$('body').keyup(this.swipe);
 		app.people.reset();
 		app.users = $.ajax("/users");
+		app.currentUser = new app.Person();
 		
 		
 	},
@@ -43,12 +44,22 @@ var appView = Backbone.View.extend({
 			app.appView.swipeScreen();
 		}
 		else if (e.which == 39) {
+			$.ajax("/match", {"type": "POST", "data": app.people.first().attributes.userID})
 			$("#app").html(app.people.first().attributes.phoneNumber);
 			console.log(app.people.first().attributes.phoneNumber);
 		}
 	},
 
 	waitScreen: function() {
+			setTimeout(function() {
+				var rawMatch = $.ajax("/match");
+				rawMatch.done(function( data ) {
+					if (data) {
+						var matchPerson = new app.Person(JSON.parse( data ))
+						$("#app").html(app.people.first().attributes.phoneNumber);
+					}
+				})
+			}, 5000);
     		$('#wait').toggle();
     		$('#main').toggle();
 	}
