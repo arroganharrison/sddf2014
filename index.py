@@ -34,7 +34,22 @@ class users:
 
 class match:
 	def POST(self):
-		matchID = web.input()["userID"]
+		userID = web.input()["userID"]
+		matchID = web.input()["matchID"]
+		for user in usersList:
+			if userID == user.attributes["userID"]:
+				user.match(matchID)
+			elif matchID == user.attributes["userID"]:
+				user.match(userID)
+	def GET(self):
+		userID = web.input()["userID"]
+		for user in usersList:
+			if userID == user.attributes["userID"] and "match" in user.attributes and user.attributes["match"] != None:
+				for match in usersList:
+					if match.attributes["userID"] == user.attributes["match"]:
+						return match.toJSON()
+		return "None"
+
 
 class User:
 	def __init__(self, attributes):
@@ -48,10 +63,10 @@ class User:
 		jsonString += "}"
 		return jsonString
 
-	def match(self, userID, listUsers):
-		for user in listUsers:
-			if userID == user.attributes["userID"]:
-				user.setMatch(self.attributes["userID"])
+	def match(self, matchID):
+		for user in usersList:
+			if matchID == user.attributes["userID"]:
+				self.setMatch(user.attributes["userID"])
 
 	def setMatch(self, userID):
 		self.attributes["match"] = userID;

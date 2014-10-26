@@ -13,8 +13,9 @@ app.Person = Backbone.Model.extend({
 	},
 	initialize: function() {
 		console.log("New Person instatiated.");
-		if (this.userID == null) {
-			this.userID = this.generateUUID();
+		if (this.attributes.userID == null) {
+			this.attributes.userID = this.generateUUID();
+			console.log(this.attributes.userID);
 		}
 	},
 	defaults: {
@@ -37,7 +38,8 @@ app.PersonView = Backbone.View.extend({
 		'<span class="thumbnail"> </span>'+
 		'<span class="name feed"><%= name %></a></span> &emsp;' +
 		'<span class="year feed"><%= year %></span> &emsp;' +
-		'<span class="rating feed"><%= rating %></span>'
+		'<span class="rating feed"><%= rating %></span> &emsp;' +
+		'<span class="userID feed"><%= userID %></span>'
 		),
 
 	events: {
@@ -61,9 +63,9 @@ app.PersonList = Backbone.Collection.extend({
 });
 
 app.people = new app.PersonList();
-for (var i = 0; i < 10; i++) {
-	//app.people.create({year: i});
-	var tmp = new app.Person({year: i});
-	$.ajax(tmp.url, {"type": "POST", "data": tmp.toJSON() })
-}
+// for (var i = 0; i < 10; i++) {
+// 	//app.people.create({year: i});
+// 	var tmp = new app.Person({year: i});
+// 	$.ajax(tmp.url, {"type": "POST", "data": tmp.toJSON() })
+// }
 console.log(app.people);

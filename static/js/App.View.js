@@ -5,6 +5,10 @@ var appView = Backbone.View.extend({
 		app.people.reset();
 		app.users = $.ajax("/users");
 		app.currentUser = new app.Person();
+		console.log(app.currentUser);
+		console.log(app.currentUser.toJSON());
+		$.ajax(app.currentUser.url, {"type": "POST", "data": app.currentUser.toJSON()});
+		app.people.add(app.currentUser);
 		
 		
 	},
@@ -21,6 +25,7 @@ var appView = Backbone.View.extend({
 		users = users.split("\', \'");
 		var people = [];
 		for (var i = 0; i < users.length; i++) {
+			console.log(users[i]);
 			var personModel = new app.Person(JSON.parse(users[i]));
 			people.push(personModel);
 		}
@@ -28,6 +33,7 @@ var appView = Backbone.View.extend({
 	},
 
 	swipeScreen: function() {
+		console.log("People collection: " + app.people);
 		if (app.people.isEmpty()) {
 			this.getUsers();
 		}
@@ -44,24 +50,29 @@ var appView = Backbone.View.extend({
 			app.appView.swipeScreen();
 		}
 		else if (e.which == 39) {
-			$.ajax("/match", {"type": "POST", "data": app.people.first().attributes.userID})
-			$("#app").html(app.people.first().attributes.phoneNumber);
+			$.ajax("/match", {"type": "POST", "data": {"userID": app.currentUser.attributes.userID, "matchID": app.people.first().attributes.userID}});
+			$("#app").html(app.people.first().attributes.phoneNumber + " " + app.people.first().attributes.userID);
 			console.log(app.people.first().attributes.phoneNumber);
 		}
 	},
 
 	waitScreen: function() {
 			setTimeout(function() {
-				var rawMatch = $.ajax("/match");
+				var rawMatch = $.ajax("/match", {"data": {"userID": app.currentUser.attributes.userID}});
 				rawMatch.done(function( data ) {
-					if (data) {
+					console.log(data);
+					if (data != "None") {
 						var matchPerson = new app.Person(JSON.parse( data ))
-						$("#app").html(app.people.first().attributes.phoneNumber);
+						$("#app").html(matchPerson.attributes.phoneNumber + " " +matchPerson.attributes.userID);
+						return
+					}
+					else {
+						app.appView.waitScreen();
 					}
 				})
 			}, 5000);
-    		$('#wait').toggle();
-    		$('#main').toggle();
+    		$('#wait').show();
+    		$('#main').hide();
 	}
 	
 });
