@@ -21,22 +21,28 @@ var appView = Backbone.View.extend({
 	},
 
 	getUsers: function() {
-		var users = app.users.responseText.slice(2, app.users.responseText.length-2);
-		users = users.split("\', \'");
-		var people = [];
-		for (var i = 0; i < users.length; i++) {
-			console.log(users[i]);
-			var personModel = new app.Person(JSON.parse(users[i]));
-			people.push(personModel);
-		}
+		var rawUsers = $.ajax("/users");
+		rawUsers.done(function (data) {
+			users = data.slice(2, data.length-2)
+			users = users.split("\', \'");
+			var people = [];
+			for (var i = 0; i < users.length; i++) {
+				console.log(users[i]);
+				var personModel = new app.Person(JSON.parse(users[i]));
+				people.push(personModel);
+			}
+			console.log(people);
 		app.people.add(people);
+		console.log(app.people);
+		app.appView.swipeScreen();
+		});
+		
 	},
 
 	swipeScreen: function() {
 		console.log("People collection: " + app.people);
-		if (app.people.isEmpty()) {
-			this.getUsers();
-		}
+		
+		console.log(app.people.first());
 		var personView = new app.PersonView({model: app.people.first()})
 		$(this.el).html(personView.render().el)
 	},
@@ -47,7 +53,13 @@ var appView = Backbone.View.extend({
 		}
 		else if (e.which == 37) {
 			app.people.shift();
-			app.appView.swipeScreen();
+			if (app.people.isEmpty()) {
+				console.log("EMPTY");
+				app.appView.getUsers();
+			}
+			else {
+				app.appView.swipeScreen();
+			}
 		}
 		else if (e.which == 39) {
 			$.ajax("/match", {"type": "POST", "data": {"userID": app.currentUser.attributes.userID, "matchID": app.people.first().attributes.userID}});

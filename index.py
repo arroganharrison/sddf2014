@@ -29,6 +29,8 @@ class users:
 		f = open('userFile', 'r')
 		for user in f:
 			returnList.append(user[:-1])
+		# for user in usersList:
+		# 	returnList.append(str(user.toJSON()))
 		print returnList
 		return returnList
 
