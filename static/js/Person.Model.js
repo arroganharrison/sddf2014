@@ -21,7 +21,7 @@ app.Person = Backbone.Model.extend({
 	defaults: {
 		name: "John Doe",
 		phoneNumber: "000-000-0000",
-		year: "SuperSeniorz",
+		year: "Supersenior",
 		rating: 5,
 		karma: 0,
 		userID: null
@@ -32,14 +32,16 @@ app.Person = Backbone.Model.extend({
 app.PersonView = Backbone.View.extend({
 	
 	tagName: "div",
-	className: "feed-holder",
+	className: "person-div",
 	
 	template: _.template(
-		'<span class="thumbnail"> </span>'+
-		'<span class="name feed"><%= name %></a></span> &emsp;' +
-		'<span class="year feed"><%= year %></span> &emsp;' +
-		'<span class="rating feed"><%= rating %></span> &emsp;' +
-		'<span class="userID feed"><%= userID %></span>'
+		'<div class="center">' +
+		'  <img src="./static/media/default.jpg" class="thumbnail" width="300" height="300" />' +
+		'  <div class="name"><%= name %></a></div>' +
+		'  <div class="year"><%= year %></div>' +
+		'  <div class="rating">Rating: <%= rating %></div>' +
+		'  <div class="userID"><%= userID %></div>' +
+		'</div>'
 		),
 
 	events: {

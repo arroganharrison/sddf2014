@@ -1,4 +1,4 @@
-<!DOCTYPE HTML>
+<!doctype html>
 
 <html>
 <head>
@@ -6,39 +6,45 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>
-		Robin Food
+		Robin Food | robinfood.us
 	</title>
 
     <!-- Bootstrap -->
     <link href="./static/css/bootstrap.min.css" rel="stylesheet">
-	<link rel="stylesheet" type="text/css" href="./static/css/index.css">
+	<link rel="stylesheet" type="text/css" href="./static/css/default.css">
 </head>
 <body>
-	<div id="app">
-		<div id="main">
-			
-			<button id="have-swipes">I have swipes!</button>
-			<button id="need-swipes">I need swipes!</button>
-			
+  <h1>Robin Food</h1>
+	<div class="container" id="app">
+		<div class="row">
+			<div class="center" id="main">
+				<div class="btn-group">
+					<button class="btn btn-default" id="have-swipes">I have swipes!</button>
+					<button class="btn btn-default" id="need-swipes">I need swipes!</button>
+				</div>
+				
+			</div>
 		</div>
+
 		<div id="addl-info" class="sidebar">
 
 		</div>
 		
-		<div id="wait" style="display: none;">
-		
-			<IMG SRC="http://bradsknutson.com/wp-content/uploads/2013/04/page-loader.gif" ALT="Loading Spinner" WIDTH=300 HEIGHT=300>
-			<button id="cancel-search">Cancel Search</button>
-			
-		</div>	
+		<div>
+			<div class="center" id="wait" style="display:none;">
+				<img src="./static/media/loading.gif" width="32" height="32" class="loading" />
+				<button id="cancel-search" class="btn btn-default disabled">Cancel Search</button>
+			</div>
+		</div>
 		
 	<script> var app = {} </script>
 	<script src="./static/js/jquery.min.js"></script>
-    <script src="./static/js/bootstrap.min.js"></script>
+  <script src="./static/js/bootstrap.min.js"></script>
 	<script src="./static/js/underscore-min.js"></script>
 	<script src="./static/js/backbone-min.js"></script>
 	<script src="./static/js/backbone-localstorage.min.js"></script>
 	<script src="./static/js/Person.Model.js"></script>
 	<script src="./static/js/App.View.js"></script>
+
 </body>
 </html>
