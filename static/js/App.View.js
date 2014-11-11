@@ -17,7 +17,8 @@ var appView = Backbone.View.extend({
 	'click #have-swipes': 'swipeScreen',
 	'click #need-swipes': 'waitScreen',
 	'keyup window': 'swipe',
-	'click #cancel-search': 'waitScreen'
+	'click #cancel-search': 'initialize',
+	'keypress .chat' : 'sendMessage'
 	},
 
 	getUsers: function() {
@@ -40,11 +41,14 @@ var appView = Backbone.View.extend({
 	},
 
 	swipeScreen: function() {
+
 		console.log("People collection: " + app.people);
 		
 		console.log(app.people.first());
 		var personView = new app.PersonView({model: app.people.first()})
+
 		$(this.el).html(personView.render().el)
+		$(".phoneNumber").hide();
 	},
 
 	swipe: function(e) {
@@ -52,6 +56,7 @@ var appView = Backbone.View.extend({
 			return
 		}
 		else if (e.which == 37) {
+			$(".phoneNumber").hide();
 			app.people.shift();
 			if (app.people.isEmpty()) {
 				console.log("EMPTY");
@@ -62,10 +67,45 @@ var appView = Backbone.View.extend({
 			}
 		}
 		else if (e.which == 39) {
+
 			$.ajax("/match", {"type": "POST", "data": {"userID": app.currentUser.attributes.userID, "matchID": app.people.first().attributes.userID}});
-			$("#app").html(app.people.first().attributes.phoneNumber + " " + app.people.first().attributes.userID);
+			app.currentUser.set({"matchID": app.people.first().attributes.userID});
+			//var personView = new app.PersonView({model: app.people.first()})
+			//$("#app").html(app.people.first().attributes.phoneNumber + " " + app.people.first().attributes.userID);
+			$(".phoneNumber").show();
+			//$(".chat").show();
 			console.log(app.people.first().attributes.phoneNumber);
+			app.appView.getMessage();
 		}
+	},
+
+	sendMessage: function(e) {
+		if (e.which == 13) {
+			var message = $(".chatBox").val();
+			app.currentUser.sendMessage(message, app.currentUser.attributes.matchID)
+			$(".chatWindow").append("<div class='chat chatMessage'>" + 
+									app.currentUser.get("name") + " " + message +
+									"</div>");
+		}
+	},
+
+	getMessage: function() {
+		setTimeout(function() {
+			var messages = $.ajax("/chat", {"data": {"userID": app.currentUser.attributes.userID}});
+			messages.done(function( data ) {
+				//data = JSON.parse( data );
+				console.log(data);
+				if (data != "[]") {
+					data = data.slice(1,data.length-1).split(",");
+					for (var i = 0; i < data.length; i++) {
+						$(".chatWindow").append("<div class='chat chatMessage'>" + 
+										app.currentUser.get("name") + " " + data[i] +
+										"</div>");
+					}
+				}
+				app.appView.getMessage();
+			});
+		}, 1000);
 	},
 
 	waitScreen: function() {
@@ -75,8 +115,12 @@ var appView = Backbone.View.extend({
 					console.log(data);
 					if (data != "None") {
 						var matchPerson = new app.Person(JSON.parse( data ))
-						$("#app").html(matchPerson.attributes.phoneNumber + " " +matchPerson.attributes.userID);
-						return
+						var personView = new app.PersonView({model: matchPerson});
+						$("#app").html(personView.render().el);
+						$(".phoneNumber").show();
+						app.currentUser.set({"matchID": matchPerson.attributes.userID});
+						//$("#app").html(matchPerson.attributes.phoneNumber + " " +matchPerson.attributes.userID);
+						app.appView.getMessage();
 					}
 					else {
 						app.appView.waitScreen();

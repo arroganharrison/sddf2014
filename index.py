@@ -4,11 +4,12 @@ web.config.debug = True
 
 urls = ('/', 'index',
 		'/users', "users",
-		'/match', "match"
+		'/match', "match",
+		'/chat', "chat"
 		)
 render = web.template.render('templates/')
 
-usersList = []
+usersList = {}
 
 class index:
 	def GET(self):
@@ -16,12 +17,13 @@ class index:
 
 class users:
 	def POST(self):
-		usersList.append(User(dict(web.input())))
-		usersListCopy = usersList[:]
+		tmpUser = User(dict(web.input()))
+		usersList[tmpUser.attributes["userID"]] = tmpUser
+		usersListCopy = dict(usersList)
 		f = open('userFile', 'w')
 		returnList = []
-		for user in usersListCopy:
-			user = user.toJSON()
+		for user in usersListCopy.keys():
+			user = usersListCopy[user].toJSON()
 			returnList.append(str(user))
 			f.write(str(user)+"\n")
 	def GET(self):
@@ -29,8 +31,6 @@ class users:
 		f = open('userFile', 'r')
 		for user in f:
 			returnList.append(user[:-1])
-		# for user in usersList:
-		# 	returnList.append(str(user.toJSON()))
 		print returnList
 		return returnList
 
@@ -38,24 +38,36 @@ class match:
 	def POST(self):
 		userID = web.input()["userID"]
 		matchID = web.input()["matchID"]
-		for user in usersList:
-			if userID == user.attributes["userID"]:
-				user.match(matchID)
-			elif matchID == user.attributes["userID"]:
-				user.match(userID)
+		usersList[userID].setMatch(matchID)
+		usersList[matchID].setMatch(userID)
 	def GET(self):
 		userID = web.input()["userID"]
-		for user in usersList:
-			if userID == user.attributes["userID"] and "match" in user.attributes and user.attributes["match"] != None:
-				for match in usersList:
-					if match.attributes["userID"] == user.attributes["match"]:
-						return match.toJSON()
+		user = usersList[userID]
+		if "match" in user.attributes and user.attributes["match"] != None:
+			return usersList[user.attributes["match"]].toJSON()
 		return "None"
+
+class chat:
+	def POST(self):
+		print web.input()
+		userID = web.input()["userID"]
+		matchID = web.input()["matchID"]
+		message = web.input()["message"]
+		usersList[matchID].addMessage(userID, message)
+		print userID, matchID, message
+
+	def GET(self):
+		userID = web.input()["userID"]
+		returnList = usersList[userID].messages[:]
+		usersList[userID].messages = []
+		print returnList
+		return returnList
 
 
 class User:
 	def __init__(self, attributes):
 		self.attributes = dict(attributes)
+		self.messages = []
 
 	def toJSON(self):
 		jsonString = "{"
@@ -65,13 +77,11 @@ class User:
 		jsonString += "}"
 		return jsonString
 
-	def match(self, matchID):
-		for user in usersList:
-			if matchID == user.attributes["userID"]:
-				self.setMatch(user.attributes["userID"])
-
 	def setMatch(self, userID):
 		self.attributes["match"] = userID;
+
+	def addMessage(self, matchID, message):
+		self.messages.append(str(message))
 
 if __name__ == "__main__": 
     app = web.application(urls, globals())

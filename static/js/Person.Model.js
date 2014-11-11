@@ -2,6 +2,7 @@
 
 app.Person = Backbone.Model.extend({
 	url: "/users",
+	chatUrl: "/chat",
 	generateUUID: function() {
 		var d = new Date().getTime();
 		var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -18,10 +19,14 @@ app.Person = Backbone.Model.extend({
 			console.log(this.attributes.userID);
 		}
 	},
+	sendMessage: function(message, matchID) {
+
+		$.ajax(this.chatUrl, {"type" : "POST", "data": { "message":  message , "userID" : this.attributes.userID , "matchID" : matchID }});
+	},
 	defaults: {
 		name: "John Doe",
 		phoneNumber: "000-000-0000",
-		year: "Supersenior",
+		year: "Superseniorz",
 		rating: 5,
 		karma: 0,
 		userID: null
@@ -41,6 +46,9 @@ app.PersonView = Backbone.View.extend({
 		'  <div class="year"><%= year %></div>' +
 		'  <div class="rating">Rating: <%= rating %></div>' +
 		'  <div class="userID"><%= userID %></div>' +
+		'  <div class="phoneNumber style="display:none"><%= phoneNumber %></div>' +
+		'  <div class="chat chatWindow"></div>' +
+		'  <input type="text" class="chat chatBox"</input>' + 
 		'</div>'
 		),
 
