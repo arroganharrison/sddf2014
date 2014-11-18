@@ -16,6 +16,7 @@ var appView = Backbone.View.extend({
 	events: {
 	'click #have-swipes': 'swipeScreen',
 	'click #need-swipes': 'waitScreen',
+	'click #create-login' : 'createLogin',
 	'keyup window': 'swipe',
 	'click #cancel-search': 'initialize',
 	'keypress .chat' : 'sendMessage'
@@ -39,6 +40,12 @@ var appView = Backbone.View.extend({
 		});
 		
 	},
+
+	createLogin: function() {
+
+		$('#need-have-screen').show();
+		$('#main').hide();
+	}
 
 	swipeScreen: function() {
 
