@@ -42,9 +42,16 @@ var appView = Backbone.View.extend({
 	},
 
 	createLogin: function() {
-
-		$('#need-have-screen').show();
-		$('#main').hide();
+		var check-login = $.ajax("/login-page",{"type": "POST", "data": {"username":username-input, "password":password-input}});
+		check-login.done(function(data)){
+		console.log(data);
+		if(data == 'true'){
+			$('#need-have-screen').show();
+			$('#main').hide();
+		} else { 
+				alert("Incorrect Username/Password!");
+			}
+		}
 	}
 
 	swipeScreen: function() {
