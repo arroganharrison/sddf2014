@@ -42,7 +42,7 @@ var appView = Backbone.View.extend({
 	},
 
 	createLogin: function() {
-		var check-login = $.ajax("/login-page",{"type": "POST", "data": {"username":username-input, "password":password-input}});
+		var check-login = $.ajax("/login-page",{"type": "POST", "data": {"username":("#username-input").text(), "password":("#password-input").text()}});
 		check-login.done(function(data)){
 		console.log(data);
 		if(data == 'true'){
