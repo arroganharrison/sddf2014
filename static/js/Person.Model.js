@@ -48,11 +48,11 @@ app.PersonView = Backbone.View.extend({
 		'  <div class="year"><%= year %></div>' +
 		'  <div class="rating_label"> <%= rating %></div>' +
 		'  <div class="rating">Rating:' +
-		'    <span id="star1"><%= rating >= 1 ? print("☆") : print("★") %></span>' +
-		'    <span id="star2"><%= rating >= 2 ? print("☆") : print("★") %></span>' +
-		'    <span id="star3"><%= rating >= 3 ? print("☆") : print("★") %></span>' +
-		'    <span id="star4"><%= rating >= 4 ? print("☆") : print("★") %></span>' +
-		'    <span id="star5"><%= rating == 5 ? print("☆") : print("★") %></span>' +
+		'    <span id="star1"><% if (rating >= 1) { %> ☆ <% } else { %> ★ <% } %></span>' +
+		'    <span id="star2"><% if (rating >= 2) { %> ☆ <% } else { %> ★ <% } %></span>' +
+		'    <span id="star3"><% if (rating >= 3) { %> ☆ <% } else { %> ★ <% } %></span>' +
+		'    <span id="star4"><% if (rating >= 4) { %> ☆ <% } else { %> ★ <% } %></span>' +
+		'    <span id="star5"><% if (rating == 5) { %> ☆ <% } else { %> ★ <% } %></span>' +
 		'  </div>' +
 		'  <div class="userID"><%= userID %></div>' +
 		'  <div class="phoneNumber style="display:none"><%= phoneNumber %></div>' +
