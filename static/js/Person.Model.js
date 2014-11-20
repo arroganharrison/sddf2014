@@ -31,7 +31,7 @@ app.Person = Backbone.Model.extend({
 		rating: 5,
 		karma: 0,
 		userID: null,
-		pictureURL: null
+		picureURL: null
 	}
 
 });
@@ -43,7 +43,7 @@ app.PersonView = Backbone.View.extend({
 	
 	template: _.template(
 		'<div class="center">' +
-		'  <img src="./static/media/default.jpg" class="thumbnail" width="300" height="300" />' +
+		'  <img src="<%= picureURL %>" class="thumbnail" width="300" height="300" />' +
 		'  <div class="name"><%= name %></a></div>' +
 		'  <div class="year"><%= year %></div>' +
 		'  <div class="rating">Rating: <%= rating %></div>' +

@@ -25,7 +25,7 @@ class index:
 class users:
 	def POST(self):
 		tmpUser = User(dict(web.input()))
-		userid = db.insert('user', name=tmpUser.attributes["name"], password = tmpUser.attributes["password"], phoneNumber=tmpUser.attributes["phoneNumber"], year=tmpUser.attributes["year"], rating=tmpUser.attributes["rating"], karma=tmpUser.attributes["karma"], userID=tmpUser.attributes["userID"], picureURL=tmpUser.attributes["pictureURL"])
+		userid = db.insert('user', name=tmpUser.attributes["name"], password = tmpUser.attributes["password"], phoneNumber=tmpUser.attributes["phoneNumber"], year=tmpUser.attributes["year"], rating=tmpUser.attributes["rating"], karma=tmpUser.attributes["karma"], userID=tmpUser.attributes["userID"], picureURL=tmpUser.attributes["picureURL"])
 		#usersList[userid] = tmpUser
 		usersList[tmpUser.attributes["userID"]] = tmpUser
 		'''usersListCopy = dict(usersList)
