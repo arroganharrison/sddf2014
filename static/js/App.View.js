@@ -19,7 +19,12 @@ var appView = Backbone.View.extend({
 	'click #create-login' : 'createLogin',
 	'keyup window': 'swipe',
 	'click #cancel-search': 'initialize',
-	'keypress .chat' : 'sendMessage'
+	'keypress .chat' : 'sendMessage',
+	'click #star1' : 'sendRating1',
+	'click #star2' : 'sendRating2',
+	'click #star3' : 'sendRating3',
+	'click #star4' : 'sendRating4',
+	'click #star5' : 'sendRating5'
 	},
 
 	getUsers: function() {
@@ -131,26 +136,46 @@ var appView = Backbone.View.extend({
 	},
 
 	waitScreen: function() {
-			setTimeout(function() {
-				var rawMatch = $.ajax("/match", {"data": {"userID": app.currentUser.attributes.userID}});
-				rawMatch.done(function( data ) {
-					console.log(data);
-					if (data != "None") {
-						var matchPerson = new app.Person(JSON.parse( data ))
-						var personView = new app.PersonView({model: matchPerson});
-						$("#app").html(personView.render().el);
-						$(".phoneNumber").show();
-						app.currentUser.set({"matchID": matchPerson.attributes.userID});
-						//$("#app").html(matchPerson.attributes.phoneNumber + " " +matchPerson.attributes.userID);
-						app.appView.getMessage();
-					}
-					else {
-						app.appView.waitScreen();
-					}
-				})
-			}, 5000);
-    		$('#wait').show();
-    		$('#main').hide();
+		setTimeout(function() {
+			var rawMatch = $.ajax("/match", {"data": {"userID": app.currentUser.attributes.userID}});
+			rawMatch.done(function( data ) {
+				console.log(data);
+				if (data != "None") {
+					var matchPerson = new app.Person(JSON.parse( data ))
+					var personView = new app.PersonView({model: matchPerson});
+					$("#app").html(personView.render().el);
+					$(".phoneNumber").show();
+					app.currentUser.set({"matchID": matchPerson.attributes.userID});
+					//$("#app").html(matchPerson.attributes.phoneNumber + " " +matchPerson.attributes.userID);
+					app.appView.getMessage();
+				}
+				else {
+					app.appView.waitScreen();
+				}
+			})
+		}, 5000);
+		$('#wait').show();
+		$('#main').hide();
+	},
+
+	sendRating1: function() {
+		$.ajax("/rating", {"type": "POST", "data": {"rating": 1}});
+	},
+
+	sendRating2: function() {
+		$.ajax("/rating", {"type": "POST", "data": {"rating": 2}});
+	},
+
+	sendRating3: function() {
+		$.ajax("/rating", {"type": "POST", "data": {"rating": 3}});
+	},
+
+	sendRating4: function() {
+		$.ajax("/rating", {"type": "POST", "data": {"rating": 4}});
+	},
+
+	sendRating5: function() {
+		$.ajax("/rating", {"type": "POST", "data": {"rating": 5}});
 	}
 	
 });
