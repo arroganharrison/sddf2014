@@ -7,7 +7,8 @@ urls = ('/', 'index',
 		'/users', "users",
 		'/match', "match",
 		'/chat', "chat",
-		'/login', "login"
+		'/login', "login",
+		'/rating', "rating"
 		)
 render = web.template.render('templates/')
 
@@ -103,6 +104,17 @@ class login:
 
 			return str("new-user")
 			
+class rating:
+	def POST(self):
+		rating = int(web.input()["rating"])
+		userID = web.input()["userID"]
+		# checkUser = db.select('user', where="userID="+"\""+userID+"\"")
+		# if checkUser:
+		# 	for item in checkUser:
+		# 		tmpUser = User(dict(item))
+		db.update('user', where="userID="+"\""+userID+"\"", rating=rating)
+
+				
 
 
 class User:
