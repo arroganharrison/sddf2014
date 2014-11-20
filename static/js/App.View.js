@@ -159,23 +159,23 @@ var appView = Backbone.View.extend({
 	},
 
 	sendRating1: function() {
-		$.ajax("/rating", {"type": "POST", "data": {"userID": app.currentUser.attributes.userID, "rating": 1}});
+		$.ajax("/rating", {"type": "POST", "data": {"userID": app.people.first().attributes.userID, "rating": 1}});
 	},
 
 	sendRating2: function() {
-		$.ajax("/rating", {"type": "POST", "data": {"userID": app.currentUser.attributes.userID, "rating": 2}});
+		$.ajax("/rating", {"type": "POST", "data": {"userID": app.people.first().attributes.userID, "rating": 2}});
 	},
 
 	sendRating3: function() {
-		$.ajax("/rating", {"type": "POST", "data": {"userID": app.currentUser.attributes.userID, "rating": 3}});
+		$.ajax("/rating", {"type": "POST", "data": {"userID": app.people.first().attributes.userID, "rating": 3}});
 	},
 
 	sendRating4: function() {
-		$.ajax("/rating", {"type": "POST", "data": {"userID": app.currentUser.attributes.userID, "rating": 4}});
+		$.ajax("/rating", {"type": "POST", "data": {"userID": app.people.first().attributes.userID, "rating": 4}});
 	},
 
 	sendRating5: function() {
-		$.ajax("/rating", {"type": "POST", "data": {"userID": app.currentUser.attributes.userID, "rating": 5}});
+		$.ajax("/rating", {"type": "POST", "data": {"userID": app.people.first().attributes.userID, "rating": 5}});
 	}
 	
 });
