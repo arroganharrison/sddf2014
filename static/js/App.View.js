@@ -7,7 +7,7 @@ var appView = Backbone.View.extend({
 		app.currentUser = new app.Person();
 		console.log(app.currentUser);
 		console.log(app.currentUser.toJSON());
-		$.ajax(app.currentUser.url, {"type": "POST", "data": app.currentUser.toJSON()});
+		//$.ajax(app.currentUser.url, {"type": "POST", "data": app.currentUser.toJSON()});
 		app.people.add(app.currentUser);
 		
 		
@@ -42,17 +42,25 @@ var appView = Backbone.View.extend({
 	},
 
 	createLogin: function() {
-		var check-login = $.ajax("/login-page",{"type": "POST", "data": {"username":("#username-input").text(), "password":("#password-input").text()}});
-		check-login.done(function(data)){
+		var checklogin = $.ajax("/login", {"type": "POST", "data": {"username": $("#username-input").val(), "password": $("#password-input").val()}});
+		checklogin.done(function(data){
 		console.log(data);
-		if(data == 'true'){
+		if(data != 'new-user' && data != 'false'){
+			app.currentUser.set({"userID" : data});
 			$('#need-have-screen').show();
 			$('#main').hide();
-		} else { 
-				alert("Incorrect Username/Password!");
-			}
 		}
-	}
+		else if (data == 'new-user') {
+			app.currentUser.set({"name" : $("#username-input").val(), "password" : $("#password-input").val()})
+			$.ajax("/users", {"type" : "POST", "data": app.currentUser.toJSON()});
+			$('#need-have-screen').show();
+			$('#main').hide();
+		}
+		else { 
+				alert("Incorrect Username/Password!");
+		}
+		});
+	},
 
 	swipeScreen: function() {
 

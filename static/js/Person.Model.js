@@ -25,11 +25,13 @@ app.Person = Backbone.Model.extend({
 	},
 	defaults: {
 		name: "John Doe",
+		password: null,
 		phoneNumber: "000-000-0000",
 		year: "Superseniorz",
 		rating: 5,
 		karma: 0,
-		userID: null
+		userID: null,
+		pictureURL: null
 	}
 
 });
