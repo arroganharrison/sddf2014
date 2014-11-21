@@ -1,8 +1,16 @@
 
+/*
+	This class is the frontend representation of users
+*/
 
 app.Person = Backbone.Model.extend({
 	url: "/users",
 	chatUrl: "/chat",
+
+	/*
+		Generates a unique ID for each user
+	*/
+
 	generateUUID: function() {
 		var d = new Date().getTime();
 		var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -41,13 +49,17 @@ app.PersonView = Backbone.View.extend({
 	tagName: "div",
 	className: "person-div",
 	
+	/*
+		This is the HTML template that is rendered for users offering swipes 
+		and for users requesting swipes, once they've been matched
+	*/
 	template: _.template(
 		'<div class="center">' +
 		'  <img src="<%= picureURL %>" class="thumbnail" width="300" height="300" />' +
 		'  <div class="name"><%= name %></a></div>' +
 		'  <div class="year"><%= year %></div>' +
-		'  <div class="rating_label"> <%= rating %></div>' +
-		'  <div class="rating">Rating:' +
+		'  <div class="rating_label"> Rating:</div>' +
+		'  <div class="rating">' +
 		'    <span id="star1"><% if (rating >= 1) { %> ☆ <% } else { %> ★ <% } %></span>' +
 		'    <span id="star2"><% if (rating >= 2) { %> ☆ <% } else { %> ★ <% } %></span>' +
 		'    <span id="star3"><% if (rating >= 3) { %> ☆ <% } else { %> ★ <% } %></span>' +

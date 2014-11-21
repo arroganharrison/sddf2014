@@ -3,6 +3,10 @@ import os
 
 web.config.debug = True
 
+'''
+urls is a variable that holds all the url mapping
+'''
+
 urls = ('/', 'index',
 		'/users', "users",
 		'/match', "match",
@@ -10,6 +14,11 @@ urls = ('/', 'index',
 		'/login', "login",
 		'/rating', "rating"
 		)
+
+'''
+declare the file to use as html template
+'''
+
 render = web.template.render('templates/')
 
 usersList = {}
@@ -18,24 +27,30 @@ print currentpath
 
 db = web.database(dbn='sqlite', db=currentpath+'/users')
 #model = UserModel(db)
+'''
+these classes correspond to urls that the UI requests
+each handles a specific case, e.g. users is for creating users and requesting users from the database
+'''
 
 class index:
 	def GET(self):
 		return render.index()
 
 class users:
+	'''
+	handle a user creation request from frontend, creates user in database and adds user to user Dictionary
+	'''
+
 	def POST(self):
 		tmpUser = User(dict(web.input()))
 		userid = db.insert('user', name=tmpUser.attributes["name"], password = tmpUser.attributes["password"], phoneNumber=tmpUser.attributes["phoneNumber"], year=tmpUser.attributes["year"], rating=tmpUser.attributes["rating"], karma=tmpUser.attributes["karma"], userID=tmpUser.attributes["userID"], picureURL=tmpUser.attributes["picureURL"])
 		#usersList[userid] = tmpUser
 		usersList[tmpUser.attributes["userID"]] = tmpUser
-		'''usersListCopy = dict(usersList)
-		f = open('userFile', 'w')
-		returnList = []
-		for user in usersListCopy.keys():
-			user = usersListCopy[user].toJSON()
-			returnList.append(str(user))
-			f.write(str(user)+"\n")'''
+
+	'''
+	returns JSON array of users in the database
+	'''
+
 	def GET(self):
 		users = db.select('user')
 		returnList = []
@@ -44,14 +59,13 @@ class users:
 			returnList.append(str(User(dict(user)).toJSON()))
 		print returnList
 		return returnList
-		'''returnList = []
-		f = open('userFile', 'r')
-		for user in f:
-			returnList.append(user[:-1])
-		print returnList
-		return returnList'''
 
 class match:
+
+	'''
+	handle a match request, initiates matching with another user
+	'''
+
 	def POST(self):
 		# for item in usersList:
 		# 	print item.attributes["userID"]
@@ -62,6 +76,11 @@ class match:
 		#match = db.select("users", where="userID="+matchID)
 		usersList[userID].setMatch(matchID)
 		usersList[matchID].setMatch(userID)
+
+	'''
+	handle GET requests to see if a waiting user has a match yet
+	'''
+
 	def GET(self):
 		userID = str(web.input()["userID"])
 		user = usersList[userID]
@@ -70,6 +89,11 @@ class match:
 		return "None"
 
 class chat:
+
+	'''
+	posts a message to a user
+	'''
+
 	def POST(self):
 		print web.input()
 		userID = web.input()["userID"]
@@ -77,6 +101,10 @@ class chat:
 		message = web.input()["message"]
 		usersList[matchID].addMessage(userID, message)
 		print userID, matchID, message
+
+	'''
+	handle GET requests to see if a waiting user has a chat message yet
+	'''
 
 	def GET(self):
 		userID = web.input()["userID"]
@@ -86,6 +114,11 @@ class chat:
 		return returnList
 
 class login:
+
+	'''
+	logs in existing users or begins process to create new users
+	'''
+
 	def POST(self):
 
 		username = web.input()["username"]
@@ -105,6 +138,11 @@ class login:
 			return str("new-user")
 			
 class rating:
+
+	'''
+	updates rating for a user
+	'''
+
 	def POST(self):
 		rating = int(web.input()["rating"])
 		userID = web.input()["userID"]
@@ -116,12 +154,21 @@ class rating:
 
 				
 
+'''
+This class is used to represent users in the backend
+all attributes of the user are stored in a Dictionary "Attributes"
+messages are stored in a List "messages"
+'''
 
 class User:
 	def __init__(self, attributes):
 		self.attributes = dict(attributes)
 		self.messages = []
 
+	'''
+	converts the user attributes to JSON for transport to frontend UI
+	'''
+	
 	def toJSON(self):
 		jsonString = "{"
 		for attribute in self.attributes:

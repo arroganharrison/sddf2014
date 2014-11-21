@@ -12,7 +12,11 @@ var appView = Backbone.View.extend({
 		
 		
 	},
-	
+
+	/*
+		Mapping of events to functions
+	*/
+
 	events: {
 	'click #have-swipes': 'swipeScreen',
 	'click #need-swipes': 'waitScreen',
@@ -26,6 +30,10 @@ var appView = Backbone.View.extend({
 	'click #star4' : 'sendRating4',
 	'click #star5' : 'sendRating5'
 	},
+
+	/*
+		Request all users from server, adds them to frontend array representation
+	*/
 
 	getUsers: function() {
 		var rawUsers = $.ajax("/users");
@@ -45,6 +53,10 @@ var appView = Backbone.View.extend({
 		});
 		
 	},
+
+	/*
+		Logs in or creates new user, see "login" server class
+	*/
 
 	createLogin: function() {
 		var checklogin = $.ajax("/login", {"type": "POST", "data": {"username": $("#username-input").val(), "password": $("#password-input").val()}, "picureURL": $("#picture-input").val()});
@@ -67,6 +79,10 @@ var appView = Backbone.View.extend({
 		});
 	},
 
+	/*
+		Renders new person on UI for users who are offering swipes
+	*/
+
 	swipeScreen: function() {
 
 		console.log("People collection: " + app.people);
@@ -77,6 +93,11 @@ var appView = Backbone.View.extend({
 		$(this.el).html(personView.render().el)
 		$(".phoneNumber").hide();
 	},
+
+	/*
+		Handles the swipe event, will either display a new user using swipeScreen() 
+		or match a user and allow communication and rating between the two
+	*/
 
 	swipe: function(e) {
 		if (!(e.which == 37) && !(e.which == 39)) {
@@ -106,6 +127,10 @@ var appView = Backbone.View.extend({
 		}
 	},
 
+	/*
+		Sends a message to the matched user, see "chat" server class
+	*/
+
 	sendMessage: function(e) {
 		if (e.which == 13) {
 			var message = $(".chatBox").val();
@@ -115,6 +140,10 @@ var appView = Backbone.View.extend({
 									"</div>");
 		}
 	},
+
+	/*
+		Polls every second for new chat messages, see "chat" server class
+	*/
 
 	getMessage: function() {
 		setTimeout(function() {
@@ -135,6 +164,11 @@ var appView = Backbone.View.extend({
 		}, 1000);
 	},
 
+	/*
+		Displays loading widget to a user requesting swipes
+		Polls every 5 seconds for a match
+	*/
+	
 	waitScreen: function() {
 		setTimeout(function() {
 			var rawMatch = $.ajax("/match", {"data": {"userID": app.currentUser.attributes.userID}});
@@ -158,6 +192,10 @@ var appView = Backbone.View.extend({
 		$('#main').hide();
 	},
 
+
+	/*
+		These 5 functions are used to rate users, see "rating" server class
+	*/
 	sendRating1: function() {
 		$.ajax("/rating", {"type": "POST", "data": {"userID": app.people.first().attributes.userID, "rating": 1}});
 	},
