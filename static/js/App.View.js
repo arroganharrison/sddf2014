@@ -3,7 +3,7 @@ var appView = Backbone.View.extend({
 	initialize: function() {
 		$('body').keyup(this.swipe);
 		app.people.reset();
-		app.users = $.ajax("/users");
+		//app.users = $.ajax("/users");
 		app.currentUser = new app.Person();
 		console.log(app.currentUser);
 		console.log(app.currentUser.toJSON());
@@ -61,21 +61,21 @@ var appView = Backbone.View.extend({
 	createLogin: function() {
 		var checklogin = $.ajax("/login", {"type": "POST", "data": {"username": $("#username-input").val(), "password": $("#password-input").val()}, "picureURL": $("#picture-input").val()});
 		checklogin.done(function(data){
-		console.log(data);
-		if(data != 'new-user' && data != 'false'){
-			app.currentUser.set({"userID" : data});
-			$('#need-have-screen').show();
-			$('#main').hide();
-		}
-		else if (data == 'new-user') {
-			app.currentUser.set({"name" : $("#username-input").val(), "password" : $("#password-input").val(), "picureURL" : $("#picture-input").val()});
-			$.ajax("/users", {"type" : "POST", "data": app.currentUser.toJSON()});
-			$('#need-have-screen').show();
-			$('#main').hide();
-		}
-		else { 
-				alert("Incorrect Username/Password!");
-		}
+			console.log(data);
+			if(data != 'new-user' && data != 'false'){
+				app.currentUser.set({"userID" : data});
+				$('#need-have-screen').show();
+				$('#main').hide();
+			}
+			else if (data == 'new-user') {
+				app.currentUser.set({"name" : $("#username-input").val(), "password" : $("#password-input").val(), "picureURL" : $("#picture-input").val()});
+				$.ajax("/users", {"type" : "POST", "data": app.currentUser.toJSON()});
+				$('#need-have-screen').show();
+				$('#main').hide();
+			}
+			else { 
+					alert("Incorrect Username/Password!");
+			}
 		});
 	},
 
@@ -84,6 +84,7 @@ var appView = Backbone.View.extend({
 	*/
 
 	swipeScreen: function() {
+		$.ajax("/hungry", {"type": "POST", "data": {"userID": app.currentUser.attributes.userID, "hungry": "false"}});
 
 		console.log("People collection: " + app.people);
 		
@@ -91,7 +92,6 @@ var appView = Backbone.View.extend({
 		var personView = new app.PersonView({model: app.people.first()})
 
 		$(this.el).html(personView.render().el)
-		$(".phoneNumber").hide();
 	},
 
 	/*
@@ -104,7 +104,7 @@ var appView = Backbone.View.extend({
 			return
 		}
 		else if (e.which == 37) {
-			$(".phoneNumber").hide();
+			
 			app.people.shift();
 			if (app.people.isEmpty()) {
 				console.log("EMPTY");
@@ -120,9 +120,9 @@ var appView = Backbone.View.extend({
 			app.currentUser.set({"matchID": app.people.first().attributes.userID});
 			//var personView = new app.PersonView({model: app.people.first()})
 			//$("#app").html(app.people.first().attributes.phoneNumber + " " + app.people.first().attributes.userID);
-			$(".phoneNumber").show();
+			
 			//$(".chat").show();
-			console.log(app.people.first().attributes.phoneNumber);
+			//console.log(app.people.first().attributes.phoneNumber);
 			app.appView.getMessage();
 		}
 	},
@@ -170,6 +170,7 @@ var appView = Backbone.View.extend({
 	*/
 	
 	waitScreen: function() {
+		$.ajax("/hungry", {"type": "POST", "data": {"userID": app.currentUser.attributes.userID, "hungry" : "true"}});
 		setTimeout(function() {
 			var rawMatch = $.ajax("/match", {"data": {"userID": app.currentUser.attributes.userID}});
 			rawMatch.done(function( data ) {
@@ -178,8 +179,8 @@ var appView = Backbone.View.extend({
 					var matchPerson = new app.Person(JSON.parse( data ))
 					var personView = new app.PersonView({model: matchPerson});
 					$("#app").html(personView.render().el);
-					$(".phoneNumber").show();
 					app.currentUser.set({"matchID": matchPerson.attributes.userID});
+					$.ajax("/hungry", {"type": "POST", "data": {"userID": app.currentUser.attributes.userID, "hungry" : "false"}});
 					//$("#app").html(matchPerson.attributes.phoneNumber + " " +matchPerson.attributes.userID);
 					app.appView.getMessage();
 				}
@@ -197,23 +198,38 @@ var appView = Backbone.View.extend({
 		These 5 functions are used to rate users, see "rating" server class
 	*/
 	sendRating1: function() {
-		$.ajax("/rating", {"type": "POST", "data": {"userID": app.people.first().attributes.userID, "rating": 1}});
+		var numratings = app.people.first().get("numratings");
+		numratings++;
+		app.people.first().set({"numratings" : numratings});
+		$.ajax("/rating", {"type": "POST", "data": {"userID": app.people.first().attributes.userID, "rating": 1, "numratings": numratings}});
 	},
 
 	sendRating2: function() {
-		$.ajax("/rating", {"type": "POST", "data": {"userID": app.people.first().attributes.userID, "rating": 2}});
+		var numratings = app.people.first().get("numratings");
+		numratings++;
+		app.people.first().set({"numratings" : numratings});
+		$.ajax("/rating", {"type": "POST", "data": {"userID": app.people.first().attributes.userID, "rating": 2, "numratings": numratings}});
 	},
 
 	sendRating3: function() {
-		$.ajax("/rating", {"type": "POST", "data": {"userID": app.people.first().attributes.userID, "rating": 3}});
+		var numratings = app.people.first().get("numratings");
+		numratings++;
+		app.people.first().set({"numratings" : numratings});
+		$.ajax("/rating", {"type": "POST", "data": {"userID": app.people.first().attributes.userID, "rating": 3, "numratings": numratings}});
 	},
 
 	sendRating4: function() {
-		$.ajax("/rating", {"type": "POST", "data": {"userID": app.people.first().attributes.userID, "rating": 4}});
+		var numratings = app.people.first().get("numratings");
+		numratings++;
+		app.people.first().set({"numratings" : numratings});
+		$.ajax("/rating", {"type": "POST", "data": {"userID": app.people.first().attributes.userID, "rating": 4, "numratings": numratings}});
 	},
 
 	sendRating5: function() {
-		$.ajax("/rating", {"type": "POST", "data": {"userID": app.people.first().attributes.userID, "rating": 5}});
+		var numratings = app.people.first().get("numratings");
+		numratings++;
+		app.people.first().set({"numratings" : numratings});
+		$.ajax("/rating", {"type": "POST", "data": {"userID": app.people.first().attributes.userID, "rating": 5, "numratings": numratings}});
 	}
 	
 });

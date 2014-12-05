@@ -37,9 +37,11 @@ app.Person = Backbone.Model.extend({
 		phoneNumber: "000-000-0000",
 		year: "Superseniorz",
 		rating: 5,
+		numratings: 0,
 		karma: 0,
 		userID: null,
-		picureURL: null
+		picureURL: null,
+		hungry: false
 	}
 
 });
@@ -66,8 +68,6 @@ app.PersonView = Backbone.View.extend({
 		'    <span id="star4"><% if (rating >= 4) { %> ☆ <% } else { %> ★ <% } %></span>' +
 		'    <span id="star5"><% if (rating == 5) { %> ☆ <% } else { %> ★ <% } %></span>' +
 		'  </div>' +
-		'  <div class="userID"><%= userID %></div>' +
-		'  <div class="phoneNumber style="display:none"><%= phoneNumber %></div>' +
 		'  <div class="chat chatWindow"></div>' +
 		'  <input type="text" class="chat chatBox"</input>' + 
 		'</div>'
