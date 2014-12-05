@@ -59,16 +59,16 @@ var appView = Backbone.View.extend({
 	*/
 
 	createLogin: function() {
-		var checklogin = $.ajax("/login", {"type": "POST", "data": {"username": $("#username-input").val(), "password": $("#password-input").val()}, "picureURL": $("#picture-input").val()});
+		var checklogin = $.ajax("/login", {"type": "POST", "data": {"username": $("#username-input").val(), "password": $("#password-input").val()}, "picureURL": $("#picture-input").val(), "class": $("#class-input").val()});
 		checklogin.done(function(data){
-			console.log(data);
+		console.log(data);
 			if(data != 'new-user' && data != 'false'){
 				app.currentUser.set({"userID" : data});
 				$('#need-have-screen').show();
 				$('#main').hide();
 			}
 			else if (data == 'new-user') {
-				app.currentUser.set({"name" : $("#username-input").val(), "password" : $("#password-input").val(), "picureURL" : $("#picture-input").val()});
+				app.currentUser.set({"name" : $("#username-input").val(), "password" : $("#password-input").val(), "picureURL" : $("#picture-input").val(), "class" : $("#class-input").val()});
 				$.ajax("/users", {"type" : "POST", "data": app.currentUser.toJSON()});
 				$('#need-have-screen').show();
 				$('#main').hide();
